@@ -14,26 +14,43 @@
         canvas.width = document.documentElement.clientWidth
 
         let ctx = canvas.getContext('2d')
-        ctx.fillStyle = 'red'
+        ctx.strokeStyle = 'red'
+        ctx.lineWidth = 8
+        ctx.lineCap = 'round'
 
+        let last = []
         let isMobile = 'ontouchstart' in document.documentElement
         if (isMobile) {
+            canvas.ontouchstart = (e) => {
+                last = [e.touches[0].clientX, e.touches[0].clientY]
+            }
             canvas.ontouchmove = (e) => {
-                ctx.fillRect(e.touches[0].clientX - 3, e.touches[0].clientY - 3, 6, 6)
+                drawLine(last[0], last[1], e.touches[0].clientX, e.touches[0].clientY)
+                last = [e.touches[0].clientX, e.touches[0].clientY]
             }
         } else {
             let mouseDown = false
-            canvas.onmousedown = () => {
+
+            canvas.onmousedown = (e) => {
                 mouseDown = true
+                last = [e.clientX, e.clientY]
             }
             canvas.onmouseup = () => {
                 mouseDown = false
             }
             canvas.onmousemove = (e) => {
                 if (mouseDown) {
-                    ctx.fillRect(e.clientX - 3, e.clientY - 3, 6, 6)
+                    drawLine(last[0], last[1], e.clientX, e.clientY)
+                    last = [e.clientX, e.clientY]
                 }
             }
+        }
+
+        function drawLine(x1, y1, x2, y2) {
+            ctx.beginPath()
+            ctx.moveTo(x1, y1)
+            ctx.lineTo(x2, y2)
+            ctx.stroke()
         }
     </script>
 </body>
