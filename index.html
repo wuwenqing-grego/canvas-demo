@@ -15,16 +15,24 @@
 
         let ctx = canvas.getContext('2d')
         ctx.fillStyle = 'red'
-        let mouseDown = false
-        canvas.onmousedown = () => {
-            mouseDown = true
-        }
-        canvas.onmouseup = () => {
-            mouseDown = false
-        }
-        canvas.onmousemove = (e) => {
-            if (mouseDown) {
-                ctx.fillRect(e.clientX - 3, e.clientY - 3, 6, 6)
+
+        let isMobile = 'ontouchstart' in document.documentElement
+        if (isMobile) {
+            canvas.ontouchmove = (e) => {
+                ctx.fillRect(e.touches[0].clientX - 3, e.touches[0].clientY - 3, 6, 6)
+            }
+        } else {
+            let mouseDown = false
+            canvas.onmousedown = () => {
+                mouseDown = true
+            }
+            canvas.onmouseup = () => {
+                mouseDown = false
+            }
+            canvas.onmousemove = (e) => {
+                if (mouseDown) {
+                    ctx.fillRect(e.clientX - 3, e.clientY - 3, 6, 6)
+                }
             }
         }
     </script>
